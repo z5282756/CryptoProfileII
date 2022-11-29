@@ -178,9 +178,9 @@ public class Coin {
     }
 
     //2.Create a method to return the correct coin from the test data ArrayList based on a received coin name
-    public static Coin findCoin(String name) {
+    public static Coin findCoin(String symbol) {
         for (Coin coin : getCoins()) {
-            if (coin.getName().toLowerCase().equals(name.toLowerCase())) {
+            if (coin.getSymbol().toLowerCase().equals(symbol.toLowerCase())) {
                 return coin;
             }
 

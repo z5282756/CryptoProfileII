@@ -1,6 +1,8 @@
 package com.example.cryptoprofileii;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +10,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+//Wk4(2) --> implements RecyclerViewInterface
+public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     private static final String TAG = "MainActivity";
     private Button launchDetailBtn;
+    //Wk4(3):
+    private RecyclerView mrecyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,33 +26,34 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "MainActivity launched");
 
-        launchDetailBtn = findViewById(R.id.launchDetailBtn);
-        launchDetailBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "Button has been clicked");
-                launchDetailActivity();
-            }
-        });
 
         setTitle("INFS3634 CryptoProfile II");
 
+        // get the handle to the recycler view:
+        mrecyclerView = findViewById(R.id.rvList);
+
+        // instantiate a linear recycler view layout manager:
+        layoutManager = new LinearLayoutManager(this);
+        mrecyclerView.setLayoutManager(layoutManager);
+
+        // instantiate the adapter and pass on the list of coins:
+        adapter = new CoinAdapter(Coin.getCoins(), this);
+
+        // connect the adapter to the recycler view:
+        mrecyclerView.setAdapter(adapter);
+
     }
     // called when user clicks on Launch Detail Activity button:
-    public void launchDetailActivity() {
+    public void launchDetailActivity(String symbol) {
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-        intent.putExtra("cryptoprofile", "Watch a video about CryptoCurrency!");
-
-        //6(cont.). Add the coin symbol as an extra message in MainActivity to identify which coin information you want to display
-        intent.putExtra("name", "Ethereum");
-        //7. DetailActivity --> Read the extra message from explicit intent above and create the correct Coin object using your search method
-
+        intent.putExtra("Symbol", symbol);
         startActivity(intent);
 
+    }
 
-
-
-
+    @Override
+    public void onItemClick(String symbol) {
+        launchDetailActivity(symbol);
     }
 
 

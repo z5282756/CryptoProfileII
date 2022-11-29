@@ -62,35 +62,12 @@ public class DetailActivity extends AppCompatActivity {
 
         //need to read message from the intent by using the key "cryptoprofile"
         // the message from the intent that we are trying to read is being named msg
-        String msg = intent.getStringExtra("cryptoprofile");
+        String msg = intent.getStringExtra("Symbol");
+        Coin coin = Coin.findCoin(msg);
 
         // using Log.d to log debug messages
-        Log.d(TAG, "DetailActivity launched with message: " + msg);
+        Log.d(TAG, "DetailActivity loading coin name: " + msg);
 
-        // find the detail activity textview element from XML file
-        detailActTv = findViewById(R.id.detailActTv);
-        // set the textview element to the message (msg) which is extracted from the key "cryptoprofile"
-        // now the message "Hello from Crypto Profile app!" is displayed on Detail Activity
-        detailActTv.setText(msg);
-
-        // find the detail activity button element from XML file
-        playVideoBtn = findViewById(R.id.playVideoBtn);
-        // set OnClickListener to the button
-        playVideoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "Button clicked");
-                playVideo();
-            }
-        });
-
-
-        //7(cont.). Read the extra message from explicit intent and create the correct Coin object using your search method:
-        Log.d(TAG, "Retrieving intent for DetailActivity");
-
-        String name = intent.getStringExtra("name");
-        Coin coin = Coin.findCoin(name);
-        Log.d(TAG, "DetailActivity loading coin name: " + name);
         if (coin != null) {
             Log.d(TAG, "Updating TectViews for DetailActivity");
             NumberFormat formatter = NumberFormat.getCurrencyInstance();

@@ -219,19 +219,19 @@ public class Coin {
     }
 
     //2.Create a method to return the correct coin from the test data ArrayList based on a received coin name
-    public static Coin findCoin(String symbol) {
-        // Implement Gson library to convert JSON string to Java object
-        Gson gson = new Gson();
-        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.jsonString, CoinLoreResponse.class);
-        List<Coin> coins = response.getData();
-
-        for(final Coin coin : coins) {
-            if(coin.getSymbol().toLowerCase().equals(symbol.toLowerCase())) {
-                return coin;
-            }
-        }
-        return null;
-    }
+//    public static Coin findCoin(String symbol) {
+//        // Implement Gson library to convert JSON string to Java object
+//        Gson gson = new Gson();
+//        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.jsonString, CoinLoreResponse.class);
+//        List<Coin> coins = response.getData();
+//
+//        for(final Coin coin : coins) {
+//            if(coin.getSymbol().toLowerCase().equals(symbol.toLowerCase())) {
+//                return coin;
+//            }
+//        }
+//        return null;
+//    }
 
     //3.Design user interface for detail activity (tut wk3 slide 6)
 

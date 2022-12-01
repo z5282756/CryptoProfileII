@@ -13,6 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.cryptoprofileii.api.Coin;
+import com.example.cryptoprofileii.api.CoinService;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -52,41 +61,86 @@ public class DetailActivity extends AppCompatActivity {
 
         Log.d(TAG, "DetailActivity view components linked to XML components");
 
-
-
         // set activity title to Detail Activity
         setTitle("Detail Activity");
 
         // call the intent from main activity
         Intent intent = getIntent();
 
-        //need to read message from the intent by using the key "cryptoprofile"
-        // the message from the intent that we are trying to read is being named msg
-        String msg = intent.getStringExtra("Symbol");
-        Coin coin = Coin.findCoin(msg);
+//        //need to read message from the intent by using the key "cryptoprofile"
+//        // the message from the intent that we are trying to read is being named msg
+//        String msg = intent.getStringExtra("Symbol");
+//        Coin coin = Coin.findCoin(msg);
+//
+//        // using Log.d to log debug messages
+//        Log.d(TAG, "DetailActivity loading coin name: " + msg);
 
-        // using Log.d to log debug messages
-        Log.d(TAG, "DetailActivity loading coin name: " + msg);
+//        if (coin != null) {
+//            Log.d(TAG, "Updating TectViews for DetailActivity");
+//            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+//            mName.setText(coin.getName());
+//            mSymbol.setText(coin.getSymbol());
+//            mValue.setText(formatter.format(Double.valueOf(coin.getPriceUsd())));
+//            mChange1h.setText(coin.getPercentChange1h() + "%");
+//            mChange24h.setText(coin.getPercentChange24h() + "%");
+//            mChange7d.setText(coin.getPercentChange7d() + "%");
+//            mMarketcap.setText(formatter.format(Double.valueOf(coin.getMarketCapUsd())));
+//            mVolume.setText(formatter.format(coin.getVolume24()));
+//            mSearch.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    searchCoin(coin.getSymbol());
+//                }
+//            });
+//            Log.d(TAG, "TextViews updated for DetailActivity");
+//        }
 
-        if (coin != null) {
-            Log.d(TAG, "Updating TectViews for DetailActivity");
-            NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            mName.setText(coin.getName());
-            mSymbol.setText(coin.getSymbol());
-            mValue.setText(formatter.format(Double.valueOf(coin.getPriceUsd())));
-            mChange1h.setText(coin.getPercentChange1h() + "%");
-            mChange24h.setText(coin.getPercentChange24h() + "%");
-            mChange7d.setText(coin.getPercentChange7d() + "%");
-            mMarketcap.setText(formatter.format(Double.valueOf(coin.getMarketCapUsd())));
-            mVolume.setText(formatter.format(coin.getVolume24()));
-            mSearch.setOnClickListener(new View.OnClickListener() {
+        if (intent.hasExtra("Symbol")) {
+            Integer id = Integer.parseInt(intent.getStringExtra("Symbol"));
+            Log.d(TAG, String.valueOf(id));
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://api.coinlore.net/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            CoinService service = retrofit.create(CoinService.class);
+            Call<ArrayList<Coin>> responseCall = service.getCoin(id);
+            responseCall.enqueue(new Callback<ArrayList<Coin>>() {
                 @Override
-                public void onClick(View view) {
-                    searchCoin(coin.getSymbol());
+                public void onResponse(Call<ArrayList<Coin>> call, Response<ArrayList<Coin>> response) {
+                    Log.d(TAG, "API call successful with" + id + "!");
+                    Coin coin = response.body().get(0);
+
+                    Log.d(TAG, "Updating TectViews for DetailActivity");
+                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                    mName.setText(coin.getName());
+                    mSymbol.setText(coin.getSymbol());
+                    mValue.setText(formatter.format(Double.valueOf(coin.getPriceUsd())));
+                    mChange1h.setText(String.format("%s%%", coin.getPercentChange1h()));
+                    mChange24h.setText(String.format("%s%%", coin.getPercentChange24h()));
+                    mChange7d.setText(String.format("%s%%", coin.getPercentChange7d()));
+                    mMarketcap.setText(formatter.format(Double.valueOf(coin.getMarketCapUsd())));
+                    mVolume.setText(formatter.format(coin.getVolume24()));
+                    mSearch.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            searchCoin(coin.getSymbol());
+                        }
+                    });
+                    Log.d(TAG, "TextViews updated for DetailActivity");
+
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Coin>> call, Throwable t) {
+                    Log.d(TAG, "API call failed with" + id + "!");
+
                 }
             });
-            Log.d(TAG, "TextViews updated for DetailActivity");
+
         }
+
+
 
 
 

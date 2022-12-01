@@ -59,7 +59,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.MyViewHolder> 
         holder.mName.setText(coin.getName());
         holder.mValue.setText(formatter.format(Double.valueOf(coin.getPriceUsd())));
         holder.mChange.setText(coin.getPercentChange1h() + " %");
-        holder.itemView.setTag((coin.getSymbol()));
+        holder.itemView.setTag((coin.getId()));
 
 
     }
@@ -142,6 +142,13 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.MyViewHolder> 
                 }
             });
         }
+        notifyDataSetChanged();
+    }
+
+    // Set the supplied data to the adapter
+    public void setData(ArrayList<Coin> data) {
+        mCoins.clear();
+        mCoins.addAll(data);
         notifyDataSetChanged();
     }
 

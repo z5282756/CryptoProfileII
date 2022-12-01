@@ -14,12 +14,19 @@ import android.widget.SearchView;
 
 import com.example.cryptoprofileii.api.Coin;
 import com.example.cryptoprofileii.api.CoinLoreResponse;
+import com.example.cryptoprofileii.api.CoinService;
 import com.example.cryptoprofileii.recyclerview_adapter.CoinAdapter;
 import com.example.cryptoprofileii.recyclerview_adapter.RecyclerViewInterface;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 //Wk4(2) --> implements RecyclerViewInterface
@@ -47,14 +54,42 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         mRecyclerView.setLayoutManager(layoutManager);
 
 
-        // // Implement Gson library to convert JSON string to Java object
-        Gson gson = new Gson();
-        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.jsonString, CoinLoreResponse.class);
-        coinList = response.getData();
+//        // // Implement Gson library to convert JSON string to Java object
+//        Gson gson = new Gson();
+//        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.jsonString, CoinLoreResponse.class);
+//        coinList = response.getData();
+
+        // Create an adapter instance with an empty ArrayList of Coin objects
+        adapter = new CoinAdapter(new ArrayList<>(), this);
 
 
-        // instantiate the adapter and pass on the list of coins:
-        adapter = new CoinAdapter(coinList, this);
+//        // instantiate the adapter and pass on the list of coins:
+//        adapter = new CoinAdapter(coinList, this);
+
+        // Implement Retrofit to make API call
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.coinlore.net") // Set the base URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        // Create object for the service interface
+        CoinService service = retrofit.create(CoinService.class);
+        Call<CoinLoreResponse> responseCall = service.getCoins();
+        responseCall.enqueue(new Callback<CoinLoreResponse>() {
+            @Override
+            public void onResponse(Call<CoinLoreResponse> call, Response<CoinLoreResponse> response) {
+                Log.d(TAG, "API call successful!");
+                List<Coin> coins = response.body().getData();
+                // Supply data to the adapter to be displayed
+                adapter.setData((ArrayList)coins);
+                adapter.sort(CoinAdapter.SORT_METHOD_VALUE);
+            }
+
+            @Override
+            public void onFailure(Call<CoinLoreResponse> call, Throwable t) {
+                Log.d(TAG, "API call failure.");
+            }
+        });
 
         // connect the adapter to the recycler view:
         mRecyclerView.setAdapter(adapter);

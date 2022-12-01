@@ -1,4 +1,4 @@
-package com.example.cryptoprofileii;
+package com.example.cryptoprofileii.recyclerview_adapter;
 
 public interface RecyclerViewInterface {
 

@@ -1,26 +1,62 @@
-package com.example.cryptoprofileii;
+package com.example.cryptoprofileii.api;
 
 //1.implement Coin java class with  fields, constructors and getter/setter methods (from Moodle)
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.List;
 
 public class Coin {
+    @SerializedName("id")
+    @Expose
     private String id;
+    @SerializedName("symbol")
+    @Expose
     private String symbol;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("nameid")
+    @Expose
     private String nameid;
+    @SerializedName("rank")
+    @Expose
     private Integer rank;
+    @SerializedName("price_usd")
+    @Expose
     private String priceUsd;
+    @SerializedName("percent_change_24h")
+    @Expose
     private String percentChange24h;
+    @SerializedName("percent_change_1h")
+    @Expose
     private String percentChange1h;
+    @SerializedName("percent_change_7d")
+    @Expose
     private String percentChange7d;
+    @SerializedName("price_btc")
+    @Expose
     private String priceBtc;
+    @SerializedName("market_cap_usd")
+    @Expose
     private String marketCapUsd;
+    @SerializedName("volume24")
+    @Expose
     private Double volume24;
+    @SerializedName("volume24a")
+    @Expose
     private Double volume24a;
+    @SerializedName("csupply")
+    @Expose
     private String csupply;
+    @SerializedName("tsupply")
+    @Expose
     private String tsupply;
+    @SerializedName("msupply")
+    @Expose
     private String msupply;
 
     public Coin(String name, String symbol, String priceUsd, String change1h, String change24h, String change7d, String marketcap, double volume) {
@@ -32,6 +68,11 @@ public class Coin {
         this.percentChange7d = change7d;
         this.marketCapUsd = marketcap;
         this.volume24 = volume;
+    }
+    public Coin(String coinName, String priceUsd, String change1h) {
+        this.name = name;
+        this.priceUsd = priceUsd;
+        this.percentChange1h = change1h;
     }
 
     public String getId() {
@@ -179,11 +220,15 @@ public class Coin {
 
     //2.Create a method to return the correct coin from the test data ArrayList based on a received coin name
     public static Coin findCoin(String symbol) {
-        for (Coin coin : getCoins()) {
-            if (coin.getSymbol().toLowerCase().equals(symbol.toLowerCase())) {
+        // Implement Gson library to convert JSON string to Java object
+        Gson gson = new Gson();
+        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.jsonString, CoinLoreResponse.class);
+        List<Coin> coins = response.getData();
+
+        for(final Coin coin : coins) {
+            if(coin.getSymbol().toLowerCase().equals(symbol.toLowerCase())) {
                 return coin;
             }
-
         }
         return null;
     }

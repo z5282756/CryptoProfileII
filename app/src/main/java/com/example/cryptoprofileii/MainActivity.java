@@ -10,9 +10,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.SearchView;
+
+import com.example.cryptoprofileii.api.Coin;
+import com.example.cryptoprofileii.api.CoinLoreResponse;
+import com.example.cryptoprofileii.recyclerview_adapter.CoinAdapter;
+import com.example.cryptoprofileii.recyclerview_adapter.RecyclerViewInterface;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "MainActivity launched");
-
-
         setTitle("INFS3634 CryptoProfile II");
 
         // get the handle to the recycler view:
@@ -44,7 +46,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        coinList = Coin.getCoins();
+
+        // // Implement Gson library to convert JSON string to Java object
+        Gson gson = new Gson();
+        CoinLoreResponse response = gson.fromJson(CoinLoreResponse.jsonString, CoinLoreResponse.class);
+        coinList = response.getData();
+
 
         // instantiate the adapter and pass on the list of coins:
         adapter = new CoinAdapter(coinList, this);

@@ -1,4 +1,4 @@
-package com.example.cryptoprofileii;
+package com.example.cryptoprofileii.recyclerview_adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.cryptoprofileii.R;
+import com.example.cryptoprofileii.api.Coin;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -129,7 +132,8 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.MyViewHolder> 
                 @Override
                 public int compare(Coin c1, Coin c2) {
                     if (sortMethod == SORT_METHOD_NAME) {
-                        return c1.getName().compareTo(c2.getName());
+                        // Make the comparison case insensitive
+                        return c1.getName().toLowerCase().compareTo(c2.getName().toLowerCase());
                     } else if (sortMethod == SORT_METHOD_VALUE) {
                         return Double.valueOf(c1.getPriceUsd()).compareTo(Double.valueOf(c2.getPriceUsd()));
                     }
